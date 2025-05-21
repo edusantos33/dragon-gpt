@@ -15,7 +15,7 @@ class OpenAIHandler():
           {"role": "user", "content": sentence}
         ]
       )
-      response = response["choices"][0]["message  "]["content"]
+      response = response["choices"][0]["message"]["content"]
       return response
     except (openai.error.RateLimitError, openai.error.InvalidRequestError) as error:
       print("You exceeded your current quota or used an invalid model.")

@@ -5,7 +5,7 @@ class DiagramHandler():
   actor_type = "actor"
   process_type = "process"
   store_type = "store"
-  trust_boundary_curve_type = "trust-broundary-curve"
+  trust_boundary_curve_type = "trust-boundary-curve"
   trust_boundary_box_type = "trust-boundary-box"
   def __init__(self, filename):
     self.filename = filename
@@ -27,9 +27,10 @@ class DiagramHandler():
       diagram = data["detail"]["diagrams"][0]
       self.diagram_type = diagram["diagramType"]
       for comp in diagram["cells"]:
-        if not (comp["shape"] == DiagramHandler.trust_boundary_box_type 
-          or comp["shape"] == DiagramHandler.trust_boundary_curve_type) and comp["data"]["outOfScope"]:
-          continue
+        if "outOfScope" in comp["data"]:
+          if not (comp["shape"] == DiagramHandler.trust_boundary_box_type 
+            or comp["shape"] == DiagramHandler.trust_boundary_curve_type) and comp["data"]["outOfScope"]:
+            continue
         new_comp = {
           "id": comp["id"],
           "type": comp["shape"],
@@ -39,8 +40,9 @@ class DiagramHandler():
         # if component is a trust boundary, add vertices
         if new_comp["type"] == DiagramHandler.trust_boundary_curve_type:
           new_comp["vertices"] = [ comp["source"] ]
-          for point in comp["vertices"]:
-            new_comp["vertices"].append(point)
+          if "vertices" in comp:
+            for point in comp["vertices"]:
+              new_comp["vertices"].append(point)
           new_comp["vertices"].append(comp["target"])
         elif new_comp["type"] == DiagramHandler.flow_type:
           new_comp["source"] = comp["source"]["cell"]
@@ -49,7 +51,7 @@ class DiagramHandler():
           new_comp["isEncrypted"] = comp["data"]["isEncrypted"]
           new_comp["protocol"] = comp["data"]["protocol"]
           new_comp["isPublicNetwork"] = comp["data"]["isPublicNetwork"]
-        else:
+        elif "position" in comp:
           new_comp["position"] = comp["position"]
           if new_comp["type"] == DiagramHandler.trust_boundary_box_type:
             new_comp["size"] = comp["size"]
