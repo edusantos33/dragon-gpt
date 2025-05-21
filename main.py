@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from utils.diagram import DiagramHandler
 from utils.chatgpt import OpenAIHandler
-from utils.local_llm.llama import LlamaHandler
+#from utils.local_llm.llama import LlamaHandler
 
 def handle_arguments():
   parser = argparse.ArgumentParser(description=
@@ -24,13 +24,14 @@ if __name__ == "__main__":
   sentence = diagram.make_sentence()
   print(sentence)
   response = ""
-  if args.use_local_llm:
-    local_llm = LlamaHandler(args.n_ctx)
-    response = local_llm.do_threat_modeling(sentence)
+  #if(False):
+  #if args.use_local_llm:
+    #local_llm = LlamaHandler(args.n_ctx)
+    #response = local_llm.do_threat_modeling(sentence)
 
-  else:
+  if(True):
       load_dotenv()
-      openai_key = os.getenv("OPENAI_KEY")
+      openai_key = os.getenv("OPENAI_API_KEY")
       if openai_key == "":
         if args.api_key:
           openai_key = args.api_key
